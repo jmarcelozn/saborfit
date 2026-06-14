@@ -26,9 +26,21 @@ app.use(
   }),
 );
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+      }
+    },
     credentials: true,
   }),
 );
@@ -71,12 +83,25 @@ app.get('/api/health', healthCheck);
 /**
  * Swagger Documentation
  */
+app.get('/api/docs/swagger.json', (_req, res) => {
+  return res.json(swaggerSpec);
+});
+
 app.use(
   '/api/docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    explorer: true,
+  swaggerUi.setup(null, {
+    explorer: false,
     customSiteTitle: 'SaborFit API Docs',
+    swaggerOptions: {
+      urls: [
+        {
+          url: '/api/docs/swagger.json',
+          name: 'SaborFit API',
+        },
+      ],
+      withCredentials: true,
+    },
   }),
 );
 

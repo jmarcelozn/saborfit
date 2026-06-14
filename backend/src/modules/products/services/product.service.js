@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { AppError } from '../../../../shared/errors/AppError.js';
+import { AppError } from '../../../shared/errors/AppError.js';
 import productRepository from '../repositories/product.repository.js';
 
 export class ProductService {

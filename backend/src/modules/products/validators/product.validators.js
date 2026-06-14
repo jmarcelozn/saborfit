@@ -1,5 +1,5 @@
 import { body, param } from 'express-validator';
-import { validate } from '../../../../shared/middleware/validate.js';
+import { validate } from '../../../shared/middleware/validate.js';
 
 const productFields = [
   'name',
