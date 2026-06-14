@@ -1,0 +1,121 @@
+/* Variáveis de Cores customizadas baseadas na sua paleta */
+:root {
+  --tea-green: #def6ca;
+  --pastel-pink: #f8bdc4;
+  --raspberry-red: #d81e5b;
+  --stone-brown: #5e5b52;
+  --hot-rose: #ba2c73;
+  
+  /* Auxiliares para o minimalismo */
+  --bg-white: #ffffff;
+  --bg-hover: #fcfbfa;
+  --transition-smooth: all 0.2s ease-in-out;
+}
+
+/* Reset básico para o escopo do header */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 4rem;
+  background-color: var(--bg-white);
+  border-bottom: 1px solid rgba(94, 91, 82, 0.08); /* Linha divisória bem sutil */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Container do Logo com Link escondido/integrado */
+.logo-container {
+  position: relative;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--stone-brown);
+  transition: var(--transition-smooth);
+}
+
+/* Efeito sutil no logo ao passar o mouse */
+.logo-link:hover .logo {
+  color: var(--raspberry-red);
+}
+
+/* Navegação */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Item de link padrão */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--stone-brown);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: var(--transition-smooth);
+}
+
+/* Ícones (finos e discretos) */
+.nav-icon {
+  color: rgba(94, 91, 82, 0.6); /* Cor mais apagada por padrão */
+  transition: var(--transition-smooth);
+}
+
+/* Comportamento de Hover Geral */
+.nav-item:hover {
+  background-color: var(--bg-hover);
+  color: var(--raspberry-red);
+}
+
+.nav-item:hover .nav-icon {
+  color: var(--raspberry-red);
+}
+
+/* Estilo especial se não estiver logado (Botão de Entrar) */
+.auth-btn {
+  border: 1px solid rgba(94, 91, 82, 0.2);
+  background-color: transparent;
+}
+
+.auth-btn:hover {
+  border-color: var(--raspberry-red);
+  background-color: rgba(248, 189, 196, 0.15); /* misturando o pastel pink de fundo */
+  color: var(--raspberry-red);
+}
+
+/* Estilo especial se estiver logado (Perfil ativo) */
+.profile-active {
+  background-color: rgba(222, 246, 202, 0.4); /* Toque sutil do tea-green */
+  color: var(--stone-brown);
+}
+
+.profile-active .nav-icon {
+  color: var(--stone-brown);
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+  .main-header {
+    padding: 1rem 2rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .nav-item span {
+    display: none; /* Esconde o texto em telas pequenas, mantendo apenas os ícones */
+  }
+}

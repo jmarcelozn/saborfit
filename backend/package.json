@@ -1,0 +1,38 @@
+{
+  "name": "saborfit-api",
+  "version": "1.0.0",
+  "description": "API backend do SaborFit",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:test": "node scripts/test-db-connection.js",
+    "db:migrate": "node scripts/run-migrations.js",
+    "security:test": "node scripts/security-test.js",
+    "test:admin-product": "node scripts/test-admin-product.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "saborfit",
+    "api",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.22.4",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
