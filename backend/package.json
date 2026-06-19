@@ -10,7 +10,8 @@
     "db:test": "node scripts/test-db-connection.js",
     "db:migrate": "node scripts/run-migrations.js",
     "security:test": "node scripts/security-test.js",
-    "test:admin-product": "node scripts/test-admin-product.js"
+    "test:admin-product": "node scripts/test-admin-product.js",
+    "test:cloudinary": "node scripts/test-cloudinary-upload.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -23,6 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -31,6 +33,7 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "multer": "^2.2.0",
     "mysql2": "^3.22.4",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"

@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #ec6f8e;
+  --primary-dark: #d85a7a;
+
+  --background: #fafafa;
+  --surface: #ffffff;
+
+  --text: #1e293b;
+  --text-muted: #64748b;
+
+  --border: #e2e8f0;
+
+  --shadow:
+    0 10px 40px rgba(15, 23, 42, 0.08);
+
+  --radius: 24px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--background);
+}
+
+/* =======================================================
+   BANNER
+======================================================= */
+
+.auth-banner {
+  flex: 1;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    #f48ca8,
+    #ec6f8e
+  );
+}
+
+.auth-banner::before {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.08);
+
+  top: -300px;
+  left: -250px;
+}
+
+.auth-banner::after {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.12);
+
+  bottom: -200px;
+  right: -150px;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+}
+
+.banner-logo {
+  width: 320px;
+  max-width: 80%;
+  height: auto;
+
+  filter: drop-shadow(
+    0 15px 40px rgba(0,0,0,.12)
+  );
+}
+
+/* =======================================================
+   FORMULÁRIO
+======================================================= */
+
+.auth-content {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+
+  background: var(--surface);
+
+  border-radius: var(--radius);
+
+  padding: 40px;
+
+  box-shadow: var(--shadow);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.auth-header {
+  text-align: center;
+}
+
+.auth-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+
+  margin-bottom: 6px;
+}
+
+.auth-header span {
+  color: var(--text-muted);
+  font-size: .95rem;
+}
+
+/* =======================================================
+   INPUTS
+======================================================= */
+
+.form-group {
+  width: 100%;
+}
+
+.form-group input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: #fff;
+
+  font-size: .95rem;
+
+  transition: .2s;
+}
+
+.form-group input:focus {
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 4px rgba(236,111,142,.15);
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+/* =======================================================
+   LINKS
+======================================================= */
+
+.auth-options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-options a {
+  text-decoration: none;
+
+  font-size: .9rem;
+  font-weight: 500;
+
+  color: var(--primary);
+}
+
+.auth-options a:hover {
+  color: var(--primary-dark);
+}
+
+/* =======================================================
+   BOTÃO
+======================================================= */
+
+.login-btn {
+  width: 100%;
+
+  border: none;
+  border-radius: 12px;
+
+  padding: 14px;
+
+  background: var(--primary);
+
+  color: white;
+
+  font-size: .95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.login-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* =======================================================
+   FOOTER
+======================================================= */
+
+.auth-footer {
+  text-align: center;
+}
+
+.auth-footer p {
+  color: var(--text-muted);
+  font-size: .95rem;
+}
+
+.auth-footer a {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.auth-footer a:hover {
+  color: var(--primary-dark);
+}
+
+/* =======================================================
+   RESPONSIVO
+======================================================= */
+
+@media (max-width: 900px) {
+  .auth-page {
+    flex-direction: column;
+  }
+
+  .auth-banner {
+    min-height: 220px;
+    flex: none;
+  }
+
+  .banner-logo {
+    width: 220px;
+  }
+
+  .auth-content {
+    padding: 24px;
+  }
+
+  .auth-card {
+    padding: 32px 24px;
+  }
+}

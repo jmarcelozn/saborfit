@@ -22,3 +22,14 @@ export const authRateLimiter = rateLimit({
     error: { message: 'Muitas tentativas de autenticação. Tente novamente mais tarde.' },
   },
 });
+
+export const loginRateLimiter = rateLimit({
+  windowMs: env.rateLimit.windowMs,
+  max: env.rateLimit.authLoginMax,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: { message: 'Muitas tentativas de login. Aguarde alguns instantes e tente novamente.' },
+  },
+});

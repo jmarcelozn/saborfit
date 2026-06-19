@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRateLimiter } from '../../../shared/middleware/rateLimiter.js';
+import { authRateLimiter, loginRateLimiter } from '../../../shared/middleware/rateLimiter.js';
 import {
   passwordChangeRateLimiter,
   emailVerificationRateLimiter,
@@ -305,11 +305,9 @@ import {
 
 const router = Router();
 
-router.use(authRateLimiter);
-
-router.post('/register', preventMassAssignment, registerValidator, register);
-router.post('/login', preventMassAssignment, loginValidator, login);
-router.post('/forgot-password', passwordResetRateLimiter, preventMassAssignment, forgotPasswordValidator, forgotPassword);
+router.post('/register', authRateLimiter, preventMassAssignment, registerValidator, register);
+router.post('/login', loginRateLimiter, preventMassAssignment, loginValidator, login);
+router.post('/forgot-password', authRateLimiter, passwordResetRateLimiter, preventMassAssignment, forgotPasswordValidator, forgotPassword);
 router.post('/validate-reset-token', preventMassAssignment, validateResetTokenValidator, validateResetToken);
 router.post('/reset-password', preventMassAssignment, resetPasswordValidator, resetPassword);
 router.post('/verify-email', preventMassAssignment, verifyEmailValidator, verifyEmail);

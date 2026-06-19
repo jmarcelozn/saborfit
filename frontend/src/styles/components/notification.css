@@ -1,0 +1,47 @@
+.notification-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+}
+
+.notification-modal {
+  max-width: 90%;
+  width: 360px;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.16);
+  text-align: center;
+}
+
+.notification-modal p {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.notification-button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.notification-info .notification-modal {
+  border: 1px solid #93c5fd;
+}
+
+.notification-error .notification-modal {
+  border: 1px solid #f87171;
+}
+
+.notification-success .notification-modal {
+  border: 1px solid #34d399;
+}

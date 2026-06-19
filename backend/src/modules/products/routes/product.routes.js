@@ -13,6 +13,12 @@ import {
   updateProductValidator,
   productIdValidator,
 } from '../validators/product.validators.js';
+import {
+  getProductMedia,
+  uploadProductMedia,
+  setPrimaryMedia,
+  deleteMedia,
+} from '../controllers/productMedia.controller.js';
 
 /**
  * @swagger
@@ -214,5 +220,11 @@ router.get('/:id', productIdValidator, getProduct);
 router.post('/', preventMassAssignment, sanitizeBody(PRODUCT_FIELDS), createProductValidator, createProduct);
 router.put('/:id', productIdValidator, preventMassAssignment, sanitizeBody(PRODUCT_FIELDS), updateProductValidator, updateProduct);
 router.delete('/:id', productIdValidator, deleteProduct);
+
+// Product media routes
+router.get('/:id/media', productIdValidator, getProductMedia);
+router.post('/:id/media', productIdValidator, uploadProductMedia);
+router.patch('/media/:mediaId/set-primary', setPrimaryMedia);
+router.delete('/media/:mediaId', deleteMedia);
 
 export default router;

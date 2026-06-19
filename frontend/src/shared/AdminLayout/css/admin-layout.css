@@ -1,0 +1,304 @@
+/* Importando a fonte Inter, padrão nos dashboards modernos */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  /* Cores */
+  --bg-main: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --border-color: #E2E8F0;
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --bg-hover: #F1F5F9;
+  --color-primary: #2563EB;
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #D97706;
+
+  /* Espaçamentos e Estrutura */
+  --sidebar-width: 280px;
+  --header-height: 70px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout Estrutural */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--sidebar-width); /* Deixa a sidebar fixa */
+  transition: margin-left 0.25s ease;
+}
+
+.admin-layout.sidebar-closed .admin-main-container {
+  margin-left: 0;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  transition: transform 0.25s ease;
+  z-index: 10;
+}
+
+.admin-sidebar.closed,
+.admin-layout.sidebar-closed .admin-sidebar {
+  transform: translateX(-100%);
+}
+
+.sidebar-brand {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-item a:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.sidebar-item.active a {
+  background-color: var(--bg-hover);
+  color: var(--color-primary);
+}
+
+/* Header */
+.admin-header {
+  height: var(--header-height);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  margin-right: 12px;
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--bg-hover);
+}
+
+.header-title h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 12px;
+  gap: 8px;
+}
+
+.header-search input {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-main);
+  outline: none;
+  width: 180px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* Main Content area */
+.admin-content {
+  padding: 32px;
+  flex: 1;
+}
+
+/* Responsividade Básica (Tablet/Mobile) */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .admin-layout.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+  }
+  .admin-main-container {
+    margin-left: 0;
+  }
+  /* Adicionar classe para abrir o Drawer via JS se necessário */
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay.open {
+    display: block;
+  }
+}
+
+.sidebar-brand {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Ajuste da Logo para não estourar o container */
+.sidebar-logo {
+  max-height: 45px; /* Altura máxima confortável para os 70px do header */
+  width: auto;
+  object-fit: contain;
+}
+
+/* ... menu, items, header continuam iguais ... */
+
+/* Overlay/Backdrop para fechar o menu clicando fora */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9; /* Fica atrás da sidebar (10) e à frente do conteúdo */
+}
+
+.sidebar-overlay.open {
+  display: block;
+}
+
+/* Responsividade Melhorada (Tablet/Mobile) */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .admin-layout.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-main-container {
+    margin-left: 0; /* Ocupa a tela toda no mobile */
+  }
+  
+  .admin-header {
+    padding: 0 16px; /* Menos espaçamento em telas pequenas */
+  }
+
+  .header-search input {
+    width: 120px; /* Reduz o input para não empurrar os outros elementos */
+  }
+}
+
+@media (max-width: 480px) {
+  .header-search {
+    display: none; /* Esconde a barra de busca em celulares muito pequenos (opcional) */
+  }
+}

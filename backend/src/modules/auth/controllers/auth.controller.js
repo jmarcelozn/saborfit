@@ -40,7 +40,7 @@ function setAuthTokenCookie(res, token) {
   res.cookie(AUTH_COOKIE_NAME, token, {
     httpOnly: true,
     secure: env.isProduction,
-    sameSite: 'lax',
+    sameSite: env.isProduction ? 'none' : 'lax',
     maxAge: parseJwtExpiresInToMs(env.jwt.expiresIn),
     path: '/',
   });
@@ -50,7 +50,7 @@ function clearAuthTokenCookie(res) {
   res.clearCookie(AUTH_COOKIE_NAME, {
     httpOnly: true,
     secure: env.isProduction,
-    sameSite: 'lax',
+    sameSite: env.isProduction ? 'none' : 'lax',
     path: '/',
   });
 }

@@ -1,0 +1,217 @@
+:root {
+  /* Paleta baseada na logo */
+  --tea-green: #def6ca;
+  --pastel-pink: #f1d4d8;
+  --soft-pink: #f8ecee;
+  --rose-beige: #fcf8f6;
+
+  --raspberry-red: #b8847f;
+  --hot-rose: #c994a2;
+
+  --stone-brown: #6f5c53;
+  --light-brown: #a08d84;
+
+  --bg-white: #fcf8f6;
+  --bg-hover: #f6efec;
+
+  --border-color: rgba(160, 141, 132, 0.15);
+
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.03);
+  --transition: 0.2s ease;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.75rem 2rem;
+
+  background: linear-gradient(
+    180deg,
+    #fffdfc 0%,
+    #fcf8f6 100%
+  );
+
+  border-bottom: 1px solid var(--border-color);
+
+  box-shadow: var(--shadow-sm);
+
+  backdrop-filter: blur(8px);
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image {
+  height: 72px;
+  width: auto;
+  object-fit: contain;
+
+  transition:
+    transform var(--transition),
+    filter var(--transition);
+}
+
+.logo-link:hover .logo-image {
+  transform: scale(1.03);
+}
+
+/* ===========================
+   NAVEGAÇÃO
+=========================== */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.75rem 1rem;
+
+  border-radius: 14px;
+
+  text-decoration: none;
+  color: var(--stone-brown);
+
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.nav-icon {
+  color: var(--light-brown);
+  transition: var(--transition);
+}
+
+.nav-item:hover {
+  background-color: var(--bg-hover);
+  color: var(--raspberry-red);
+}
+
+.nav-item:hover .nav-icon {
+  color: var(--raspberry-red);
+}
+
+/* ===========================
+   PERFIL
+=========================== */
+
+.profile-active {
+  background: rgba(241, 212, 216, 0.35);
+  border: 1px solid rgba(201, 148, 162, 0.25);
+}
+
+.profile-active .nav-icon {
+  color: var(--stone-brown);
+}
+
+.profile-active:hover {
+  background: rgba(241, 212, 216, 0.55);
+}
+
+/* ===========================
+   LOGIN
+=========================== */
+
+.auth-btn {
+  border: 1px solid rgba(160, 141, 132, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.auth-btn:hover {
+  border-color: var(--pastel-pink);
+  background: rgba(241, 212, 216, 0.18);
+}
+
+/* ===========================
+   ADMIN
+=========================== */
+
+.admin-link {
+  color: var(--hot-rose);
+  font-weight: 600;
+}
+
+.admin-link:hover {
+  background: rgba(201, 148, 162, 0.12);
+}
+
+/* ===========================
+   RESPONSIVO TABLET
+=========================== */
+
+@media (max-width: 768px) {
+  .main-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo-image {
+    height: 58px;
+  }
+
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-item {
+    padding: 0.7rem;
+  }
+
+  .nav-item span {
+    display: none;
+  }
+}
+
+/* ===========================
+   RESPONSIVO MOBILE
+=========================== */
+
+@media (max-width: 480px) {
+  .main-header {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .logo-image {
+    height: 48px;
+  }
+
+  .nav-links {
+    gap: 0.35rem;
+  }
+
+  .nav-item {
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+}

@@ -83,6 +83,7 @@ export const env = {
     windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
     max: Number(process.env.RATE_LIMIT_MAX) || 100,
     authMax: Number(process.env.RATE_LIMIT_AUTH_MAX) || 20,
+    authLoginMax: Number(process.env.RATE_LIMIT_AUTH_LOGIN_MAX) || 40,
   },
 
   email: {
@@ -96,5 +97,13 @@ export const env = {
     smtpPort: Number(process.env.SMTP_PORT) || 587,
     smtpUser: process.env.SMTP_USER,
     smtpPass: process.env.SMTP_PASS,
+  },
+
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+    uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || 'unsigned',
+    folder: process.env.CLOUDINARY_FOLDER || 'saborfit',
   },
 };

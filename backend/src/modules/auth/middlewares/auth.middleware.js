@@ -39,10 +39,7 @@ export async function authenticate(req, _res, next) {
     let payload;
 
     try {
-      payload = jwt.verify(token, env.jwt.secret, {
-        issuer: env.jwt.issuer,
-        audience: env.jwt.audience,
-      });
+      payload = jwt.verify(token, env.jwt.secret);
     } catch {
       throw new AppError('Token inválido ou expirado', 401);
     }
