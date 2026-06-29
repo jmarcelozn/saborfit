@@ -1,0 +1,274 @@
+.banner {
+  background: #f6ead8;
+  padding: 5rem 2rem;
+  overflow: hidden;
+}
+
+.banner-container {
+  max-width: 1300px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 4rem;
+
+  position: relative;
+}
+
+.banner-text {
+  max-width: 560px;
+}
+
+.banner-tag {
+  display: block;
+  margin-bottom: 1rem;
+
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  color: #9d7a5d;
+}
+
+.banner-title {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.05;
+  font-weight: 300;
+
+  color: #7a2f3d;
+  margin-bottom: 2rem;
+}
+
+.banner-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.8;
+
+  color: #7a6b60;
+  margin-bottom: 2rem;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.banner-primary {
+  background: #7a2f3d;
+  color: white;
+
+  border: none;
+  padding: 1rem 2rem;
+
+  cursor: pointer;
+}
+
+.banner-secondary {
+  background: transparent;
+  color: #7a2f3d;
+
+  border: 1px solid #d4b7a1;
+  padding: 1rem 2rem;
+
+  cursor: pointer;
+}
+
+.banner-card {
+  width: 100%;
+  max-width: 420px;
+
+  justify-self: center;
+
+  position: relative;
+}
+
+.banner-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  border: 8px solid #e9d5c3;
+}
+
+.banner-card-caption {
+  position: absolute;
+
+  bottom: -20px;
+  left: -20px;
+
+  background: #7a2f3d;
+  color: white;
+
+  padding: 1rem 1.5rem;
+}
+
+.banner-card-caption p {
+  margin: 0;
+  font-style: italic;
+}
+
+.banner-card-caption span {
+  display: block;
+  margin-top: 0.5rem;
+
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+}/* ===========================
+   TABLETS
+=========================== */
+
+@media (max-width: 992px) {
+  .banner {
+    padding: 4rem 1.5rem;
+  }
+
+  .banner-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .banner-text {
+    max-width: 100%;
+  }
+
+  .banner-title {
+    font-size: clamp(2.8rem, 8vw, 4rem);
+  }
+
+  .banner-subtitle {
+    max-width: 100%;
+  }
+
+  .banner-card {
+    max-width: 420px;
+    width: 100%;
+  }
+
+  .banner-image {
+    height: 450px;
+  }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+  .banner {
+    padding: 3rem 1.25rem;
+  }
+
+  .banner-container {
+    gap: 2.5rem;
+  }
+
+  .banner-text {
+    text-align: center;
+  }
+
+  .banner-tag {
+    letter-spacing: 3px;
+    font-size: 0.7rem;
+  }
+
+  .banner-title {
+    font-size: clamp(2.3rem, 10vw, 3.4rem);
+    margin-bottom: 1rem;
+  }
+
+  .banner-subtitle {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+  }
+
+  .banner-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .banner-primary,
+  .banner-secondary {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .banner-card {
+    max-width: 320px;
+  }
+
+  .banner-image {
+    height: 380px;
+    border-width: 6px;
+  }
+
+  .banner-card-caption {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -15px;
+    width: 85%;
+    text-align: center;
+  }
+}
+
+/* ===========================
+   MOBILE PEQUENO
+=========================== */
+
+@media (max-width: 480px) {
+  .banner {
+    padding: 2.5rem 1rem;
+  }
+
+  .banner-title {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+    line-height: 1.1;
+  }
+
+  .banner-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .banner-tag {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .banner-card {
+    max-width: 280px;
+  }
+
+  .banner-image {
+    height: 320px;
+  }
+
+  .banner-card-caption {
+    padding: 0.75rem 1rem;
+  }
+
+  .banner-card-caption p {
+    font-size: 0.85rem;
+  }
+
+  .banner-card-caption span {
+    font-size: 0.65rem;
+  }
+}
+
+/* ===========================
+   CELULARES MUITO PEQUENOS
+=========================== */
+
+@media (max-width: 360px) {
+  .banner-title {
+    font-size: 1.8rem;
+  }
+
+  .banner-image {
+    height: 280px;
+  }
+
+  .banner-primary,
+  .banner-secondary {
+    font-size: 0.9rem;
+  }
+}

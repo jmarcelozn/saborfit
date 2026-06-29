@@ -7,6 +7,20 @@ export class ProductService {
     return productRepository.findAll();
   }
 
+  async listCatalogProducts() {
+    return productRepository.findActiveCatalog();
+  }
+
+  async getCatalogProduct(id) {
+    const product = await productRepository.findActiveById(id);
+
+    if (!product) {
+      throw new AppError('Produto não encontrado', 404);
+    }
+
+    return product;
+  }
+
   async getProduct(id) {
     const product = await productRepository.findById(id);
 

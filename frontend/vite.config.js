@@ -12,6 +12,8 @@ export default defineConfig({
   },
 
   server: {
+    open: true, // abre o navegador automaticamente
+
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

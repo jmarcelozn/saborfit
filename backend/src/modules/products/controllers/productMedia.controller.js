@@ -1,6 +1,6 @@
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
-import AppError from '../../../shared/errors/AppError.js';
+import { AppError } from '../../../shared/errors/AppError.js';
 import { getProductMediaById, getProductMediaByProductId, createProductMedia, updateProductMedia, deleteProductMedia, setPrimaryMedia as setPrimaryMediaRepo } from '../repositories/productMedia.repository.js';
 
 const upload = multer({

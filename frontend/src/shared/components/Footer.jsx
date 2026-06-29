@@ -1,23 +1,37 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  buildInstagramUrl,
+  buildMailtoUrl,
+  buildWhatsappUrl,
+  formatWhatsappDisplay,
+} from '@/shared/utils/storeContact';
 import '../../styles/components/Footer.css';
 
-function Footer() {
+function Footer({ settings = null }) {
+  const showBrand = settings && (settings.store_name || settings.description);
+  const showContact = settings && (settings.whatsapp || settings.email || settings.address);
+  const showSocial = settings && settings.instagram;
+
+  const whatsappDisplay = settings ? formatWhatsappDisplay(settings.whatsapp) : null;
+  const whatsappUrl = settings ? buildWhatsappUrl(settings.whatsapp) : null;
+  const emailUrl = settings ? buildMailtoUrl(settings.email) : null;
+  const instagramUrl = settings ? buildInstagramUrl(settings.instagram) : null;
+
   return (
     <footer className="main-footer">
       <div className="footer-container">
+        {showBrand && (
+          <div className="footer-section brand-info">
+            {settings.store_name && (
+              <strong className="footer-logo">{settings.store_name}</strong>
+            )}
 
-        {/* Sobre */}
-        <div className="footer-section brand-info">
-          <strong className="footer-logo">SaborFit</strong>
+            {settings.description && (
+              <p className="footer-description">{settings.description}</p>
+            )}
+          </div>
+        )}
 
-          <p className="footer-description">
-            Marmitas saudáveis e práticas para o seu dia a dia.
-            Sabor e saúde em perfeito equilíbrio.
-          </p>
-        </div>
-
-        {/* Navegação */}
         <div className="footer-section">
           <h4 className="footer-title">Navegação</h4>
 
@@ -25,54 +39,69 @@ function Footer() {
             <li>
               <Link to="/">Início</Link>
             </li>
-
-            <li>
-              <Link to="/cardapio">Cardápio</Link>
-            </li>
-
-            <li>
-              <Link to="/sobre">Sobre Nós</Link>
-            </li>
-
-            <li>
-              <Link to="/faq">Dúvidas Frequentes</Link>
-            </li>
           </ul>
         </div>
 
-        {/* Contato */}
-        <div className="footer-section">
-          <h4 className="footer-title">Contato</h4>
+        {showContact && (
+          <div className="footer-section">
+            <h4 className="footer-title">Contato</h4>
 
-          <ul className="footer-contact">
-            <li>(11) 99999-9999</li>
-            <li>suporte@saborfit.com.br</li>
-            <li>São Paulo, SP</li>
-          </ul>
-        </div>
+            <ul className="footer-contact">
+              {settings.whatsapp && whatsappDisplay && (
+                <li>
+                  {whatsappUrl ? (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {whatsappDisplay}
+                    </a>
+                  ) : (
+                    whatsappDisplay
+                  )}
+                </li>
+              )}
 
-        {/* Redes Sociais */}
-        <div className="footer-section">
-          <h4 className="footer-title">Siga-nos</h4>
+              {settings.email && (
+                <li>
+                  {emailUrl ? (
+                    <a href={emailUrl}>{settings.email}</a>
+                  ) : (
+                    settings.email
+                  )}
+                </li>
+              )}
 
-          <div className="footer-socials">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Instagram
-            </a>
+              {settings.address && <li>{settings.address}</li>}
+            </ul>
           </div>
-        </div>
+        )}
 
+        {showSocial && (
+          <div className="footer-section">
+            <h4 className="footer-title">Siga-nos</h4>
+
+            <div className="footer-socials">
+              {instagramUrl && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Direitos Autorais */}
       <div className="footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()} SaborFit - Marmitas Saudáveis.
-          Todos os direitos reservados.
+          &copy; {new Date().getFullYear()}
+          {settings?.store_name ? ` ${settings.store_name}.` : ''}
+          {' '}Todos os direitos reservados.
         </p>
       </div>
     </footer>

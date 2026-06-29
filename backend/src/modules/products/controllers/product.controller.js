@@ -7,6 +7,16 @@ export const listProducts = asyncHandler(async (_req, res) => {
   return successResponse(res, products);
 });
 
+export const listCatalogProducts = asyncHandler(async (_req, res) => {
+  const products = await productService.listCatalogProducts();
+  return successResponse(res, products);
+});
+
+export const getCatalogProduct = asyncHandler(async (req, res) => {
+  const product = await productService.getCatalogProduct(Number(req.params.id));
+  return successResponse(res, product);
+});
+
 export const getProduct = asyncHandler(async (req, res) => {
   const product = await productService.getProduct(Number(req.params.id));
   return successResponse(res, product);

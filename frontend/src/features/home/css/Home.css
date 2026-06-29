@@ -1,0 +1,195 @@
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #faf8f6 0%, #f5f1ed 100%);
+}
+
+/* PRODUCTS SECTION */
+.products-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #2a2a2a;
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.5px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #888;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.products-status {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+  padding: 2rem 0;
+}
+
+.products-status--error {
+  color: #b45309;
+}
+
+/* CTA SECTION */
+.cta-section {
+  background: linear-gradient(135deg, #e8ddd6 0%, #f0e6df 100%);
+  padding: 5rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(200, 180, 160, 0.3);
+  border-bottom: 1px solid rgba(200, 180, 160, 0.3);
+}
+
+.cta-content h3 {
+  font-size: 2rem;
+  color: #2a2a2a;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+
+.cta-content p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.cta-button {
+  padding: 0.9rem 2.5rem;
+  background: #c4a98e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cta-button:hover {
+  background: #b3936f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(196, 169, 142, 0.3);
+}
+
+/* ANIMATIONS */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .products-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .cta-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .cta-content h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+}
+/* Botão Flutuante do WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  width: 55px;
+  height: 55px;
+  bottom: 25px;
+  right: 25px;
+  background-color: #25D366;
+  color: #FFF;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Tamanho do Ícone SVG */
+.whatsapp-icon {
+  width: 32px;
+  height: 32px;
+}
+
+/* Efeito de hover suave ao passar o mouse */
+.whatsapp-float:hover {
+  background-color: #20ba5a;
+  transform: scale(1.05);
+}
+
+/* Ajuste opcional para telas mobile ficarem mais discretas */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 48px;
+    height: 48px;
+    bottom: 20px;
+    right: 20px;
+  }
+  .whatsapp-icon {
+    width: 26px;
+    height: 26px;
+  }
+}

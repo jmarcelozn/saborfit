@@ -4,7 +4,9 @@ import { sanitizeBody, preventMassAssignment } from '../../../shared/middleware/
 import {
   createProduct,
   deleteProduct,
+  getCatalogProduct,
   getProduct,
+  listCatalogProducts,
   listProducts,
   updateProduct,
 } from '../controllers/product.controller.js';
@@ -212,6 +214,9 @@ const PRODUCT_FIELDS = [
   'stock_quantity',
   'is_active',
 ];
+
+router.get('/catalog', listCatalogProducts);
+router.get('/catalog/:id', productIdValidator, getCatalogProduct);
 
 router.use(authenticate, authorize('admin'));
 

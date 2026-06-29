@@ -12,6 +12,54 @@ export class ProductRepository {
     return rows;
   }
 
+  async findActiveCatalog() {
+    const [rows] = await pool.query(`
+      SELECT
+        p.id,
+        p.sku,
+        p.name,
+        p.description,
+        p.price,
+        (
+          SELECT pm.secure_url
+          FROM produto_midias pm
+          WHERE pm.produto_id = p.id
+            AND pm.resource_type = 'image'
+          ORDER BY pm.is_primary DESC, pm.sort_order ASC
+          LIMIT 1
+        ) AS image_url
+      FROM produtos p
+      WHERE p.is_active = TRUE
+      ORDER BY p.created_at DESC
+    `);
+
+    return rows;
+  }
+
+  async findActiveById(id) {
+    const [rows] = await pool.query(`
+      SELECT
+        p.id,
+        p.sku,
+        p.name,
+        p.description,
+        p.price,
+        (
+          SELECT pm.secure_url
+          FROM produto_midias pm
+          WHERE pm.produto_id = p.id
+            AND pm.resource_type = 'image'
+          ORDER BY pm.is_primary DESC, pm.sort_order ASC
+          LIMIT 1
+        ) AS image_url
+      FROM produtos p
+      WHERE p.id = ? AND p.is_active = TRUE
+      LIMIT 1
+    `, [id]);
+
+    return rows[0] || null;
+  }
+
   async findById(id) {
     const [rows] = await pool.query(
       `SELECT id, sku, name, description, price, cost_price, category_id, stock_quantity, is_active, created_at, updated_at FROM produtos WHERE id = ? LIMIT 1`,

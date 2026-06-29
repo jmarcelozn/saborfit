@@ -82,11 +82,18 @@
 }
 
 /* Itens de Contato com Ícone */
-.footer-contact li {
+.footer-contact li,
+.footer-contact a {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+.footer-contact a:hover {
+  color: var(--raspberry-red);
 }
 
 .footer-contact svg {

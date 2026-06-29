@@ -1,5 +1,5 @@
-import { pool } from '../../../database/pool.js';
-import AppError from '../../../shared/errors/AppError.js';
+import pool from '../../../database/pool.js';
+import { AppError } from '../../../shared/errors/AppError.js';
 
 export async function getProductMediaByProductId(produtoId) {
   const connection = await pool.getConnection();
