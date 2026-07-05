@@ -37,12 +37,15 @@ export default function CartSummary({ subtotal, itemCount, onClear, disabled }) 
         }),
       });
 
-      if (response.data?.whatsappUrl) {
+      const whatsappUrl = response?.data?.whatsappUrl || response?.whatsappUrl;
+
+      if (whatsappUrl) {
         showNotification('Redirecionando para o WhatsApp...', 'success');
-        setTimeout(() => {
-          window.location.href = response.data.whatsappUrl;
-        }, 1000);
+        window.location.href = whatsappUrl;
+        return;
       }
+
+      showNotification('Não foi possível gerar o link do WhatsApp. Tente novamente.', 'error');
     } catch (error) {
       showNotification(error.message || 'Erro ao finalizar pedido', 'error');
     } finally {

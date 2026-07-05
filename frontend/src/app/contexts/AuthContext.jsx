@@ -1,4 +1,11 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { apiFetch, registerApiErrorHandler } from "@/app/services/api";
 import { showNotification } from "@/app/services/notificationService";
 import { ROUTES } from "@/app/config/routes";
@@ -9,6 +16,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
+  const unauthorizedHandled = useRef(false);
+
+  const clearAuth = useCallback(() => {
+    setUser(null);
+
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+  }, []);
+
   const getMe = async () => {
     const data = await apiFetch("/me", {
       method: "GET",
@@ -18,50 +34,77 @@ export function AuthProvider({ children }) {
       ...data.data.user,
       session: data.data.session,
     });
+
+    unauthorizedHandled.current = false;
+
     return data.data.user;
   };
 
   const logout = useCallback(() => {
-    setUser(null);
-  }, []);
+    unauthorizedHandled.current = false;
+    clearAuth();
+  }, [clearAuth]);
 
   const handleUnauthorized = useCallback(() => {
+    // NÃO redireciona enquanto está inicializando
+    // Usuários não autenticados acessando páginas públicas é esperado durante init
+    if (isInitializing) {
+      return;
+    }
+
+    if (unauthorizedHandled.current) {
+      return;
+    }
+
+    unauthorizedHandled.current = true;
+
+    clearAuth();
+
     const currentPath = window.location.pathname;
+
     const authRoutes = [
       ROUTES.LOGIN,
       ROUTES.REGISTER,
       ROUTES.FORGOT_PASSWORD,
       ROUTES.RESET_PASSWORD,
     ];
-    const isAuthRoute = authRoutes.includes(currentPath);
 
-    logout();
+    if (!authRoutes.includes(currentPath)) {
+      showNotification(
+        "Sua sessão expirou. Faça login novamente.",
+        "error"
+      );
 
-    if (!isAuthRoute) {
-      showNotification("Sua sessão expirou. Faça login novamente.", "error");
       window.location.replace(ROUTES.LOGIN);
     }
-  }, [logout]);
+  }, [clearAuth, isInitializing]);
 
   useEffect(() => {
+    // Registra um handler "silencioso" durante a inicialização
+    // que não redireciona em caso de 401 (usuário não autenticado é esperado)
+    registerApiErrorHandler(null);
+
     async function initAuth() {
       try {
+        // Tenta recuperar dados do usuário sem ativar redirecionamento
+        // Se não estiver autenticado, a exceção é capturada e tratada normalmente
         await getMe();
       } catch {
-        setUser(null);
+        clearAuth();
       } finally {
         setIsInitializing(false);
       }
     }
 
-    registerApiErrorHandler((status) => {
-      if (status === 401) {
-        handleUnauthorized();
-      }
+    initAuth().finally(() => {
+      // Após inicializar, registra o handler real que redireciona ao login
+      registerApiErrorHandler((status) => {
+        if (status === 401) {
+          handleUnauthorized();
+        }
+      });
     });
-
-    initAuth();
-  }, [handleUnauthorized]);
+  }, [handleUnauthorized, clearAuth]);
 
   const login = async (email, senha) => {
     const data = await apiFetch("/login", {
@@ -72,10 +115,13 @@ export function AuthProvider({ children }) {
       }),
     });
 
+    unauthorizedHandled.current = false;
+
     setUser({
       ...data.data.user,
       session: data.data.session,
     });
+
     return data;
   };
 
@@ -87,13 +133,13 @@ export function AuthProvider({ children }) {
   };
 
   const logoutAll = async () => {
-    const data = await apiFetch("/logout-all", {
-      method: "POST",
-    });
-
-    logout();
-
-    return data;
+    try {
+      await apiFetch("/logout-all", {
+        method: "POST",
+      });
+    } finally {
+      logout();
+    }
   };
 
   return (
@@ -101,7 +147,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         isAuthenticated: Boolean(user),
-        isAdmin: Boolean(user?.role === 'admin'),
+        isAdmin: user?.role === "admin",
         isInitializing,
         login,
         register,

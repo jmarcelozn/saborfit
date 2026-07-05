@@ -1,8 +1,20 @@
 import { env } from '../../config/env.js';
 import { AppError } from '../errors/AppError.js';
 
+const AUTH_COOKIE_NAME = 'saborfit_auth_token';
+
 export function errorHandler(err, _req, res, _next) {
   if (err instanceof AppError) {
+    // Clear auth token cookie on 401 (Unauthorized) errors
+    if (err.statusCode === 401) {
+      res.clearCookie(AUTH_COOKIE_NAME, {
+        httpOnly: true,
+        secure: env.isProduction,
+        sameSite: env.isProduction ? 'none' : 'lax',
+        path: '/',
+      });
+    }
+
     return res.status(err.statusCode).json({
       success: false,
       error: {
