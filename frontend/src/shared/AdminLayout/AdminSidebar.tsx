@@ -13,11 +13,13 @@ import logo from '@/assets/logo.png';
 interface AdminSidebarProps {
   currentPath?: string;
   isOpen?: boolean;
+  onNavigate?: () => void;
 }
 
 export default function AdminSidebar({
   currentPath = '/dashboard',
   isOpen = true,
+  onNavigate,
 }: AdminSidebarProps) {
   const menuItems = [
     {
@@ -66,7 +68,9 @@ export default function AdminSidebar({
                 currentPath === item.path ? 'active' : ''
               }`}
             >
-              <Link to={item.path}>
+              {/* onNavigate fecha o drawer no mobile ao trocar de página;
+                  no desktop a prop é opcional e não tem efeito visual */}
+              <Link to={item.path} onClick={onNavigate}>
                 {item.icon}
                 <span>{item.label}</span>
               </Link>

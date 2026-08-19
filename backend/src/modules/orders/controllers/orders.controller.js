@@ -1,5 +1,5 @@
-import asyncHandler from '../../../shared/utils/asyncHandler.js';
-import successResponse from '../../../shared/utils/successResponse.js';
+import { asyncHandler } from '../../../shared/utils/asyncHandler.js';
+import { successResponse } from '../../../shared/utils/response.js';
 import ordersService from '../services/orders.service.js';
 
 const ordersController = {

@@ -1,21 +1,57 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Trash2, Shield, ShieldAlert } from "lucide-react";
 
 import { useAuth } from "@/app/contexts/useAuth";
+import { showNotification } from "@/app/services/notificationService";
 import AdminLayout from "@/shared/AdminLayout/AdminLayout";
 
 import { useUsers } from "../hooks/useUsers";
+import { deleteUser, updateUserRole } from "../services/adminUsers.service";
+import "./css/AdminUsers.css";
 
 export default function AdminUsers() {
   const navigate = useNavigate();
-
   const { user, isAuthenticated } = useAuth();
+  const { users, loading, error, reload } = useUsers();
+  const [updatingRole, setUpdatingRole] = useState(null);
+  const [deletingUser, setDeletingUser] = useState(null);
 
-  const {
-    users,
-    loading,
-    error,
-  } = useUsers();
+  const handleUpdateRole = async (userId, currentRole) => {
+    const newRole = currentRole === "admin" ? "user" : "admin";
+    
+    if (!window.confirm(`Deseja alterar a função deste usuário para ${newRole}?`)) {
+      return;
+    }
+
+    try {
+      setUpdatingRole(userId);
+      await updateUserRole(userId, newRole);
+      showNotification("Função atualizada com sucesso", "success");
+      reload();
+    } catch (err) {
+      showNotification("Erro ao atualizar função", "error");
+    } finally {
+      setUpdatingRole(null);
+    }
+  };
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (!window.confirm(`Deseja realmente excluir o usuário ${userName}? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    try {
+      setDeletingUser(userId);
+      await deleteUser(userId);
+      showNotification("Usuário excluído com sucesso", "success");
+      reload();
+    } catch (err) {
+      showNotification("Erro ao excluir usuário", "error");
+    } finally {
+      setDeletingUser(null);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -34,114 +70,107 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
+      <div className="admin-users-header">
+        <div className="admin-users-title">
           <h1>Gerenciamento de Usuários</h1>
-          <p>
-            Visualize e gerencie os usuários cadastrados na plataforma.
-          </p>
+          <p>Visualize e gerencie os usuários cadastrados na plataforma.</p>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            padding: "1rem",
-            borderRadius: "12px",
-            boxShadow: "0 2px 10px rgba(0,0,0,.08)",
-          }}
-        >
-          <strong>Total:</strong> {users.length}
+        <div className="admin-users-stats">
+          <div className="stat-card">
+            <span className="stat-label">Total</span>
+            <span className="stat-value">{users.length}</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Admins</span>
+            <span className="stat-value">{users.filter(u => u.role === "admin").length}</span>
+          </div>
         </div>
       </div>
 
       {loading && (
-        <p>Carregando usuários...</p>
+        <div className="loading-state">
+          <p>Carregando usuários...</p>
+        </div>
       )}
 
       {error && (
-        <div
-          style={{
-            background: "#ffe5e5",
-            color: "#d00000",
-            padding: "1rem",
-            borderRadius: "8px",
-            marginBottom: "1rem",
-          }}
-        >
-          {error}
+        <div className="error-state">
+          <p>{error}</p>
         </div>
       )}
 
       {!loading && !error && (
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "12px",
-            overflow: "hidden",
-            boxShadow: "0 2px 12px rgba(0,0,0,.08)",
-          }}
-        >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
+        <div className="users-table-container">
+          <table className="users-table">
             <thead>
-              <tr
-                style={{
-                  background: "#f7f7f7",
-                }}
-              >
-                <th style={thStyle}>ID</th>
-                <th style={thStyle}>Nome</th>
-                <th style={thStyle}>Email</th>
-                <th style={thStyle}>Função</th>
-                <th style={thStyle}>Verificado</th>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Função</th>
+                <th>Verificado</th>
+                <th>Ações</th>
               </tr>
             </thead>
 
             <tbody>
               {users.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan="5"
-                    style={{
-                      textAlign: "center",
-                      padding: "2rem",
-                    }}
-                  >
+                  <td colSpan="6" className="empty-state">
                     Nenhum usuário encontrado.
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
-                  <tr key={user.id}>
-                    <td style={tdStyle}>{user.id}</td>
-
-                    <td style={tdStyle}>
-                      {user.nome}
+                users.map((userData) => (
+                  <tr key={userData.id}>
+                    <td className="user-id">#{userData.id}</td>
+                    <td className="user-name">{userData.nome}</td>
+                    <td className="user-email">{userData.email}</td>
+                    <td className="user-role">
+                      <span className={`role-badge role-${userData.role}`}>
+                        {userData.role === "admin" ? (
+                          <Shield size={14} />
+                        ) : (
+                          <ShieldAlert size={14} />
+                        )}
+                        {userData.role}
+                      </span>
                     </td>
-
-                    <td style={tdStyle}>
-                      {user.email}
+                    <td className="user-verified">
+                      {userData.emailVerificado ? (
+                        <span className="verified-badge">✅</span>
+                      ) : (
+                        <span className="unverified-badge">❌</span>
+                      )}
                     </td>
-
-                    <td style={tdStyle}>
-                      {user.role}
-                    </td>
-
-                    <td style={tdStyle}>
-                      {user.emailVerificado
-                        ? "✅"
-                        : "❌"}
+                    <td className="user-actions">
+                      <button
+                        className="action-btn action-btn--role"
+                        onClick={() => handleUpdateRole(userData.id, userData.role)}
+                        disabled={updatingRole === userData.id || userData.id === user.id}
+                        title="Alterar função"
+                      >
+                        {updatingRole === userData.id ? (
+                          "..."
+                        ) : userData.role === "admin" ? (
+                          "Remover admin"
+                        ) : (
+                          "Tornar admin"
+                        )}
+                      </button>
+                      <button
+                        className="action-btn action-btn--delete"
+                        onClick={() => handleDeleteUser(userData.id, userData.nome)}
+                        disabled={deletingUser === userData.id || userData.id === user.id}
+                        title="Excluir usuário"
+                      >
+                        {deletingUser === userData.id ? (
+                          "..."
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -153,14 +182,3 @@ export default function AdminUsers() {
     </AdminLayout>
   );
 }
-
-const thStyle = {
-  padding: "1rem",
-  textAlign: "left",
-  borderBottom: "1px solid #eee",
-};
-
-const tdStyle = {
-  padding: "1rem",
-  borderBottom: "1px solid #f0f0f0",
-};

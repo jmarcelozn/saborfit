@@ -5,6 +5,12 @@ import { showNotification } from '@/app/services/notificationService';
 import { getStoreSettings } from '@/app/services/settingsService';
 import './css/CartSummary.css';
 
+function formatDateDisplay(dateString) {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+}
+
 export default function CartSummary({ subtotal, itemCount, onClear, disabled }) {
   const [deliveryDate, setDeliveryDate] = useState('');
   const [observations, setObservations] = useState('');
@@ -78,6 +84,11 @@ export default function CartSummary({ subtotal, itemCount, onClear, disabled }) 
             min={new Date().toISOString().split('T')[0]}
             disabled={disabled || isCheckingOut}
           />
+          {deliveryDate && (
+            <span className="cart-summary__date-display">
+              {formatDateDisplay(deliveryDate)}
+            </span>
+          )}
         </div>
 
         <div className="cart-summary__form-group">

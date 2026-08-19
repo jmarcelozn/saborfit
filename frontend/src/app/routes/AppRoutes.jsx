@@ -9,6 +9,7 @@ import Admin from "@/features/admin/pages/Admin";
 import AdminProducts from "@/features/admin/pages/AdminProducts";
 import ProductForm from "@/features/admin/pages/ProductForm";
 import AdminUsers from "@/features/admin-users/pages/AdminUsers";
+import AdminOrders from "@/features/admin-orders/pages/AdminOrders";
 
 import ProductMediaManager from "@/features/product-media/pages/ProductMediaManager";
 
@@ -119,6 +120,16 @@ export default function AppRoutes() {
           element={
             <RequireAdmin>
               <AdminUsers />
+            </RequireAdmin>
+          }
+        />
+
+        {/* Pedidos */}
+        <Route
+          path="/dashboard/orders"
+          element={
+            <RequireAdmin>
+              <AdminOrders />
             </RequireAdmin>
           }
         />

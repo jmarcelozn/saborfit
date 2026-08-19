@@ -2,7 +2,7 @@ import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { getProductImage } from '@/shared/utils/getProductImage';
 import './css/ProductCard.css';
 
-function ProductCard({ product, onAddToCart, isAdding = false }) {
+function ProductCard({ product, onAddToCart, onViewDetails, isAdding = false }) {
   const name = product?.name || 'Produto';
   const image = getProductImage(product);
   const price = product?.price;
@@ -10,6 +10,12 @@ function ProductCard({ product, onAddToCart, isAdding = false }) {
   const handleAddToCart = () => {
     if (typeof onAddToCart === 'function') {
       onAddToCart(product);
+    }
+  };
+
+  const handleViewDetails = () => {
+    if (typeof onViewDetails === 'function') {
+      onViewDetails(product);
     }
   };
 
@@ -24,7 +30,12 @@ function ProductCard({ product, onAddToCart, isAdding = false }) {
         />
 
         <div className="product-overlay">
-          <button type="button" className="product-view-btn">
+          <button
+            type="button"
+            className="product-view-btn"
+            onClick={handleViewDetails}
+            aria-label="Ver detalhes do produto"
+          >
             Ver Detalhes
           </button>
         </div>

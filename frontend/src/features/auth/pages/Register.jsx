@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/app/contexts/useAuth";
 import { getErrorMessage } from "@/app/services/errorHandler";
+import logo from "@/assets/logo.png";
 import "@/styles/pages/auth.css";
 
 export default function Register() {
+  const navigate = useNavigate();
   const { register } = useAuth();
 
   const [form, setForm] = useState({
@@ -11,61 +14,116 @@ export default function Register() {
     email: "",
     senha: "",
   });
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function handleChange(field) {
+    return (e) => {
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
+      if (error) setError("");
+    };
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    setIsSubmitting(true);
 
     try {
       const data = await register(form);
 
-      alert(data.message);
+      if (data?.data?.user) {
+        navigate("/", { replace: true });
+        return;
+      }
+
+      setSuccessMessage(data?.message || "Conta criada com sucesso!");
     } catch (err) {
-      alert(getErrorMessage(err));
+      setError(getErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="auth-container">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <h1>Cadastro</h1>
+    <div className="auth-page">
 
-        <input
-          placeholder="Nome"
-          value={form.nome}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              nome: e.target.value,
-            })
-          }
-        />
+      <div className="auth-card">
+        <div className="auth-brand">
+          <img src={logo} alt="SaborFit" className="auth-logo" />
+          <p className="auth-tagline">Sabor que aconchega</p>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              email: e.target.value,
-            })
-          }
-        />
+        <div className="auth-header">
+          <h1>Criar conta</h1>
+          <p>Leva menos de um minuto para começar.</p>
+        </div>
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={form.senha}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              senha: e.target.value,
-            })
-          }
-        />
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <div className="form-group">
+            <label htmlFor="nome">Nome</label>
+            <input
+              id="nome"
+              type="text"
+              autoComplete="name"
+              placeholder="Seu nome completo"
+              value={form.nome}
+              onChange={handleChange("nome")}
+              required
+            />
+          </div>
 
-        <button type="submit">Criar Conta</button>
-      </form>
+          <div className="form-group">
+            <label htmlFor="email">E-mail</label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="seuemail@exemplo.com"
+              value={form.email}
+              onChange={handleChange("email")}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="senha">Senha</label>
+            <input
+              id="senha"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Crie uma senha"
+              value={form.senha}
+              onChange={handleChange("senha")}
+              minLength={6}
+              required
+            />
+            <span className="field-hint">Mínimo de 6 caracteres.</span>
+          </div>
+
+          {error && (
+            <p className="field-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          {successMessage && (
+            <p className="field-success" role="status">
+              {successMessage}
+            </p>
+          )}
+
+          <button type="submit" className="auth-submit" disabled={isSubmitting}>
+            {isSubmitting ? "Criando conta..." : "Criar conta"}
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Já possui conta? <a href="/login">Entrar</a>
+        </p>
+      </div>
     </div>
   );
 }

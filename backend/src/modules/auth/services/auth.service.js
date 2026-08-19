@@ -33,7 +33,7 @@ function getLockoutExpiryDate() {
 }
 
 export class AuthService {
-  async register({ nome, email, senha }) {
+  async register({ nome, email, senha }, { ip, userAgent } = {}) {
     const existingUser = await userRepository.findByEmail(email);
 
     if (existingUser) {
@@ -50,10 +50,22 @@ export class AuthService {
 
     const verification = await emailVerificationService.createVerification(user.id);
 
-    await auditService.logUserRegister(user.id, null, null, { email });
+    await auditService.logUserRegister(user.id, ip, userAgent, { email });
+
+    const token = this.generateToken(user);
+
+    await loginLogRepository.create({
+      usuarioId: user.id,
+      ip,
+      userAgent,
+      sucesso: true,
+    });
+
+    await auditService.logUserLogin(user.id, ip, userAgent);
 
     return {
       user: sanitizeUser(user),
+      token,
       verification,
     };
   }

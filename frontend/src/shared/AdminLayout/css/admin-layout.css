@@ -32,7 +32,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Layout Estrutural */
+/* aplicada via JS enquanto o drawer mobile está aberto, para travar o scroll de fundo */
+body.body-scroll-locked {
+  overflow: hidden;
+}
+
+/* ===== Layout Estrutural ===== */
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -42,15 +47,11 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: var(--sidebar-width); /* Deixa a sidebar fixa */
+  margin-left: var(--sidebar-width); /* sidebar fixa e sempre visível no desktop */
   transition: margin-left 0.25s ease;
 }
 
-.admin-layout.sidebar-closed .admin-main-container {
-  margin-left: 0;
-}
-
-/* Sidebar */
+/* ===== Sidebar ===== */
 .admin-sidebar {
   width: var(--sidebar-width);
   height: 100vh;
@@ -61,14 +62,9 @@ body {
   left: 0;
   display: flex;
   flex-direction: column;
-  transform: translateX(0);
+  transform: translateX(0); /* sempre visível fora do breakpoint mobile */
   transition: transform 0.25s ease;
   z-index: 10;
-}
-
-.admin-sidebar.closed,
-.admin-layout.sidebar-closed .admin-sidebar {
-  transform: translateX(-100%);
 }
 
 .sidebar-brand {
@@ -80,6 +76,13 @@ body {
   font-weight: 600;
   color: var(--text-main);
   border-bottom: 1px solid var(--border-color);
+}
+
+/* Ajuste da Logo para não estourar o container */
+.sidebar-logo {
+  max-height: 45px; /* Altura máxima confortável para os 70px do header */
+  width: auto;
+  object-fit: contain;
 }
 
 .sidebar-menu {
@@ -113,7 +116,19 @@ body {
   color: var(--color-primary);
 }
 
-/* Header */
+/* Overlay/Backdrop, só é usado no modo mobile (drawer) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9; /* fica atrás da sidebar (10) e à frente do conteúdo */
+}
+
+/* ===== Header ===== */
 .admin-header {
   height: var(--header-height);
   background-color: var(--bg-surface);
@@ -210,95 +225,74 @@ body {
   color: var(--text-main);
 }
 
-/* Main Content area */
+/* ===== Main Content area ===== */
 .admin-content {
   padding: 32px;
   flex: 1;
 }
 
-/* Responsividade Básica (Tablet/Mobile) */
+/* =====================================================
+   Responsividade — a partir daqui, e SOMENTE aqui, a
+   sidebar vira um menu "drawer": escondida por padrão,
+   e só aparece quando .admin-layout tem a classe
+   "sidebar-open". No desktop ela fica sempre visível.
+   ===================================================== */
 @media (max-width: 1024px) {
-  .admin-sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-  .admin-layout.sidebar-open .admin-sidebar {
-    transform: translateX(0);
-  }
   .admin-main-container {
-    margin-left: 0;
+    margin-left: 0; /* conteúdo ocupa a tela toda no mobile */
   }
-  /* Adicionar classe para abrir o Drawer via JS se necessário */
-  .admin-sidebar.open {
-    transform: translateX(0);
-  }
-  .sidebar-overlay.open {
-    display: block;
-  }
-}
 
-.sidebar-brand {
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-main);
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* Ajuste da Logo para não estourar o container */
-.sidebar-logo {
-  max-height: 45px; /* Altura máxima confortável para os 70px do header */
-  width: auto;
-  object-fit: contain;
-}
-
-/* ... menu, items, header continuam iguais ... */
-
-/* Overlay/Backdrop para fechar o menu clicando fora */
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 9; /* Fica atrás da sidebar (10) e à frente do conteúdo */
-}
-
-.sidebar-overlay.open {
-  display: block;
-}
-
-/* Responsividade Melhorada (Tablet/Mobile) */
-@media (max-width: 1024px) {
   .admin-sidebar {
+    /* em telas estreitas a sidebar não precisa ocupar 280px fixos:
+       usa o menor valor entre a largura padrão e 82% da viewport */
+    width: min(var(--sidebar-width), 82vw);
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .admin-layout.sidebar-open .admin-sidebar {
-    transform: translateX(0);
+    box-shadow: none;
   }
 
-  .admin-main-container {
-    margin-left: 0; /* Ocupa a tela toda no mobile */
+  .admin-layout.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+    box-shadow: 8px 0 24px rgba(15, 23, 42, 0.15);
   }
-  
+
+  .admin-layout.sidebar-open .sidebar-overlay {
+    display: block;
+  }
+
   .admin-header {
-    padding: 0 16px; /* Menos espaçamento em telas pequenas */
+    padding: 0 16px; /* menos espaçamento em telas pequenas */
   }
 
   .header-search input {
-    width: 120px; /* Reduz o input para não empurrar os outros elementos */
+    width: 120px; /* reduz o input para não empurrar os outros elementos */
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-sidebar {
+    width: 88vw;
+  }
+
+  .sidebar-brand {
+    padding: 0 16px;
+  }
+
+  .sidebar-menu {
+    padding: 16px 12px;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* No desktop o toggle não colapsa a sidebar (ela é fixa),
+     então escondemos o botão para não confundir o usuário. */
+  .sidebar-toggle {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
   .header-search {
-    display: none; /* Esconde a barra de busca em celulares muito pequenos (opcional) */
+    display: none; /* esconde a barra de busca em celulares muito pequenos */
   }
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/app/config/routes";
-import DefaultLayout from "@/app/layouts/DefaultLayout";
 import "@/styles/pages/error.css";
 
 export default function ErrorPage() {
@@ -14,7 +13,7 @@ export default function ErrorPage() {
   const details = state.details || null;
 
   return (
-    <DefaultLayout>
+    <>
       <div className="error-page">
         <div className="error-card">
           <div className="error-status">{status}</div>
@@ -23,15 +22,10 @@ export default function ErrorPage() {
           {details && <pre className="error-details">{JSON.stringify(details, null, 2)}</pre>}
 
           <div className="error-actions">
-            <button className="btn" onClick={() => navigate(ROUTES.HOME)}>
-              Ir para Início
-            </button>
-            <button className="btn btn-outline" onClick={() => navigate(ROUTES.LOGIN)}>
-              Fazer Login
-            </button>
+
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    </>
   );
 }

@@ -56,10 +56,39 @@ function clearAuthTokenCookie(res) {
 }
 
 export const register = asyncHandler(async (req, res) => {
-  const result = await authService.register(req.body);
+  const result = await authService.register(req.body, {
+    ip: getClientIp(req),
+    userAgent: req.get('user-agent') || null,
+  });
 
   const message = result.message || 'Usuário cadastrado com sucesso';
   const statusCode = result.user ? 201 : 200;
+
+  if (result.user && result.token) {
+    setAuthTokenCookie(res, result.token);
+
+    const tokenPayload = jwt.decode(result.token);
+    const expiresAt = tokenPayload?.exp
+      ? new Date(tokenPayload.exp * 1000).toISOString()
+      : null;
+    const expiresInSeconds = tokenPayload?.exp
+      ? Math.max(0, tokenPayload.exp - Math.floor(Date.now() / 1000))
+      : null;
+
+    return successResponse(
+      res,
+      {
+        user: result.user,
+        session: {
+          expiresAt,
+          expiresInSeconds,
+        },
+        verification: result.verification,
+      },
+      message,
+      statusCode,
+    );
+  }
 
   return successResponse(
     res,

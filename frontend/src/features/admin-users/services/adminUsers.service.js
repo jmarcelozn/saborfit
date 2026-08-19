@@ -12,7 +12,7 @@ export async function getUsers() {
 
   const data = await response.json();
 
-  return data.data?.users || [];
+  return data.data || [];
 }
 
 export async function deleteUser(id) {

@@ -43,6 +43,13 @@ class AdminUsersService {
       throw new AppError('Usuário não encontrado', 404);
     }
 
+    // Check if user has orders
+    const hasOrders = await adminUsersRepository.userHasOrders(id);
+    
+    if (hasOrders) {
+      throw new AppError('Não é possível excluir este usuário pois existem pedidos associados a ele.', 400);
+    }
+
     await adminUsersRepository.delete(id);
 
     return {

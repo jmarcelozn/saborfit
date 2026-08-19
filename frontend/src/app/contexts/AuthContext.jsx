@@ -126,10 +126,21 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (payload) => {
-    return await apiFetch("/register", {
+    const data = await apiFetch("/register", {
       method: "POST",
       body: JSON.stringify(payload),
     });
+
+    if (data?.data?.user) {
+      unauthorizedHandled.current = false;
+
+      setUser({
+        ...data.data.user,
+        session: data.data.session,
+      });
+    }
+
+    return data;
   };
 
   const logoutAll = async () => {

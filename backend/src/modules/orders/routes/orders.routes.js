@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import authenticate from '../../../shared/middlewares/authenticate.js';
-import authorize from '../../../shared/middlewares/authorize.js';
-import validate from '../../../shared/middlewares/validate.js';
+import { authenticate, authorize } from '../../auth/middlewares/auth.middleware.js';
+import { validate } from '../../../shared/middleware/validate.js';
 import ordersController from '../controllers/orders.controller.js';
 import {
   validateCreateOrder,

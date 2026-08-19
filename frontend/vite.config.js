@@ -12,7 +12,6 @@ export default defineConfig({
   },
 
   server: {
-    open: true, // abre o navegador automaticamente
 
     proxy: {
       '/api': {

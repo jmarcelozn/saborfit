@@ -49,6 +49,19 @@ class AdminUsersRepository {
     return this.findById(id);
   }
 
+  async userHasOrders(id) {
+    const [rows] = await pool.query(
+      `
+      SELECT COUNT(*) as count
+      FROM pedidos
+      WHERE usuario_id = ?
+      `,
+      [id]
+    );
+
+    return rows[0].count > 0;
+  }
+
   async delete(id) {
     const [result] = await pool.query(
       `

@@ -83,39 +83,42 @@ const ordersRepository = {
 
   async findAll({ page = 1, limit = 20, status } = {}) {
     const offset = (page - 1) * limit;
-    const params = [];
-    let where = '';
-
-    if (status) {
-      where = 'WHERE p.status = ?';
-      params.push(status);
-    }
-
-    params.push(limit, offset);
-
-    const [rows] = await pool.execute(
-      `SELECT
+    
+    let query = `
+      SELECT
          p.id,
+         p.usuario_id,
          p.total,
          p.status,
+         p.observacoes,
          p.whatsapp,
+         p.endereco,
          p.forma_pagamento,
          p.created_at,
-         u.nome AS cliente_nome
+         u.nome AS usuario_nome,
+         u.email AS usuario_email
        FROM pedidos p
        INNER JOIN usuarios u ON u.id = p.usuario_id
-       ${where}
-       ORDER BY p.created_at DESC
-       LIMIT ? OFFSET ?`,
-      params
-    );
+    `;
+    
+    let countQuery = 'SELECT COUNT(*) AS total FROM pedidos p';
+    const params = [];
+    const countParams = [];
+    
+    if (status) {
+      query += ' WHERE p.status = ?';
+      countQuery += ' WHERE p.status = ?';
+      params.push(status);
+      countParams.push(status);
+    }
+    
+    query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
 
-    const [[{ total }]] = await pool.execute(
-      `SELECT COUNT(*) AS total FROM pedidos p ${where}`,
-      status ? [status] : []
-    );
+    const [rows] = await pool.query(query, params);
+    const [[{ total }]] = await pool.query(countQuery, countParams);
 
-    return { data: rows, total, page, limit };
+    return { orders: rows, total, page, limit };
   },
 
   async updateStatus(id, status) {
@@ -124,7 +127,8 @@ const ordersRepository = {
       [status, id]
     );
 
-    return this.findById(id);
+    const updatedOrder = await this.findById(id);
+    return updatedOrder;
   },
 };
 
