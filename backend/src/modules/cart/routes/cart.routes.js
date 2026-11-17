@@ -12,6 +12,7 @@ import { checkout } from '../controllers/checkout.controller.js';
 import {
   addCartItemValidator,
   cartItemIdValidator,
+  checkoutValidator,
   updateCartItemValidator,
 } from '../validators/cart.validators.js';
 
@@ -26,6 +27,6 @@ router.post('/', preventMassAssignment, sanitizeBody(CART_ITEM_FIELDS), addCartI
 router.delete('/', clearCart);
 router.patch('/items/:itemId', preventMassAssignment, sanitizeBody(['quantity']), updateCartItemValidator, updateCartItem);
 router.delete('/items/:itemId', cartItemIdValidator, removeCartItem);
-router.post('/checkout', checkout);
+router.post('/checkout', checkoutValidator, checkout);
 
 export default router;

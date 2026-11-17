@@ -39,6 +39,9 @@ function Footer({ settings = null }) {
             <li>
               <Link to="/">Início</Link>
             </li>
+            <li>
+              <Link to="/cardapio">Cardápio</Link>
+            </li>
           </ul>
         </div>
 

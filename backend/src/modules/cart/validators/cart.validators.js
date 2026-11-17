@@ -25,3 +25,13 @@ export const cartItemIdValidator = validate([
     .isInt({ gt: 0 })
     .withMessage('ID do item inválido'),
 ]);
+
+export const checkoutValidator = validate([
+  body('endereco')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Endereço de entrega é obrigatório.')
+    .isLength({ max: 500 })
+    .withMessage('Endereço inválido.'),
+]);

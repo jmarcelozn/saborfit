@@ -95,6 +95,7 @@ export default function AdminOrders() {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
     return (
+      order.codigo?.toLowerCase().includes(searchLower) ||
       order.id?.toString().includes(searchLower) ||
       order.usuario_nome?.toLowerCase().includes(searchLower) ||
       order.usuario_email?.toLowerCase().includes(searchLower)
@@ -252,7 +253,7 @@ export default function AdminOrders() {
                   const statusInfo = getStatusInfo(order.status);
                   return (
                     <tr key={order.id}>
-                      <td className="order-id">#{order.id}</td>
+                      <td className="order-id">{order.codigo}</td>
                       <td className="order-customer">
                         <div className="customer-info">
                           <User size={16} />
@@ -300,7 +301,7 @@ export default function AdminOrders() {
         <div className="order-modal-overlay" onClick={() => setShowOrderModal(false)}>
           <div className="order-modal" onClick={(e) => e.stopPropagation()}>
             <div className="order-modal-header">
-              <h2>Pedido #{selectedOrder.id}</h2>
+              <h2>Pedido {selectedOrder.codigo}</h2>
               <button
                 className="close-btn"
                 onClick={() => setShowOrderModal(false)}

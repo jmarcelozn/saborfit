@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/shared/utils/formatCurrency';
 import { getProductImage } from '@/shared/utils/getProductImage';
 import { ROUTES } from '@/app/config/routes';
@@ -8,104 +8,46 @@ import './css/CartItem.css';
 export default function CartItem({ item, onUpdateQuantity, onRemove, disabled }) {
   const image = getProductImage(item.product);
   const maxQuantity = item.product?.stock_quantity ?? 99;
+  const name = item.product?.name || 'Produto';
 
-  const handleDecrease = () => {
-    if (item.quantity <= 1) {
-      onRemove(item.id);
-      return;
-    }
-
-    onUpdateQuantity(item.id, item.quantity - 1);
-  };
+  const handleDecrease = () => item.quantity <= 1
+    ? onRemove(item.id)
+    : onUpdateQuantity(item.id, item.quantity - 1);
 
   const handleIncrease = () => {
-    if (item.quantity >= maxQuantity) {
-      return;
-    }
-
-    onUpdateQuantity(item.id, item.quantity + 1);
+    if (item.quantity < maxQuantity) onUpdateQuantity(item.id, item.quantity + 1);
   };
 
   return (
     <article className="cart-item">
-      <div className="cart-item__image-wrap">
-        <img
-          src={image}
-          alt={item.product?.name || 'Produto'}
-          className="cart-item__image"
-          loading="lazy"
-        />
-      </div>
-
+      <div className="cart-item__image-wrap"><img src={image} alt={name} className="cart-item__image" loading="lazy" /></div>
       <div className="cart-item__details">
-        <h3 className="cart-item__name">{item.product?.name}</h3>
-
-        {item.product?.description && (
-          <p className="cart-item__description">{item.product.description}</p>
-        )}
-
-        <p className="cart-item__unit-price">
-          {formatCurrency(item.unit_price)} <span>un.</span>
-        </p>
+        <span className="cart-item__label">Confeitaria artesanal</span>
+        <h3 className="cart-item__name">{name}</h3>
+        {item.product?.description && <p className="cart-item__description">{item.product.description}</p>}
+        <p className="cart-item__unit-price">{formatCurrency(item.unit_price)} <span>por unidade</span></p>
       </div>
-
-      <div className="cart-item__actions">
-        <div className="cart-item__quantity">
-          <button
-            type="button"
-            className="cart-item__qty-btn"
-            onClick={handleDecrease}
-            disabled={disabled}
-            aria-label="Diminuir quantidade"
-          >
-            <Minus size={16} />
-          </button>
-
-          <span className="cart-item__qty-value">{item.quantity}</span>
-
-          <button
-            type="button"
-            className="cart-item__qty-btn"
-            onClick={handleIncrease}
-            disabled={disabled || item.quantity >= maxQuantity}
-            aria-label="Aumentar quantidade"
-          >
-            <Plus size={16} />
-          </button>
+      <div className="cart-item__purchase">
+        <p className="cart-item__subtotal"><span>Subtotal</span><strong>{formatCurrency(item.subtotal)}</strong></p>
+        <div className="cart-item__quantity" aria-label={`Quantidade de ${name}`}>
+          <button type="button" onClick={handleDecrease} disabled={disabled} aria-label="Diminuir quantidade"><Minus size={15} /></button>
+          <span aria-live="polite">{item.quantity}</span>
+          <button type="button" onClick={handleIncrease} disabled={disabled || item.quantity >= maxQuantity} aria-label="Aumentar quantidade"><Plus size={15} /></button>
         </div>
-
-        <p className="cart-item__subtotal">{formatCurrency(item.subtotal)}</p>
-
-        <button
-          type="button"
-          className="cart-item__remove"
-          onClick={() => onRemove(item.id)}
-          disabled={disabled}
-          aria-label="Remover item"
-        >
-          <Trash2 size={18} />
-        </button>
+        <button type="button" className="cart-item__remove" onClick={() => onRemove(item.id)} disabled={disabled}><Trash2 size={15} /> Remover</button>
       </div>
     </article>
   );
 }
 
 export function EmptyCart() {
-  const navigate = useNavigate();
-
   return (
-    <div className="cart-empty">
-      <p className="cart-empty__title">Seu carrinho está vazio</p>
-      <p className="cart-empty__text">
-        Explore nossos produtos e adicione itens para continuar.
-      </p>
-      <button
-        type="button"
-        className="cart-empty__btn"
-        onClick={() => navigate(ROUTES.HOME)}
-      >
-        Ver produtos
-      </button>
-    </div>
+    <section className="cart-empty">
+      <span className="cart-empty__icon"><ShoppingBag size={28} /></span>
+      <span className="cart-page__eyebrow">Seu carrinho</span>
+      <h2>Nenhuma delícia por aqui.</h2>
+      <p>Explore nosso cardápio e escolha os sabores para a sua próxima celebração.</p>
+      <Link className="cart-empty__btn" to={ROUTES.MENU}>Conhecer o cardápio <span aria-hidden="true">→</span></Link>
+    </section>
   );
 }

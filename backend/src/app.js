@@ -26,10 +26,19 @@ app.use(
   }),
 );
 
+const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
+  ...configuredOrigins,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
+  'https://seam.com.br',
+  'https://sandworm-sevenfold-dreamy.ngrok-free.dev',
 ];
 
 app.use(

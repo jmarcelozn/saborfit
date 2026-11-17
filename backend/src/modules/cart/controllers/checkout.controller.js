@@ -21,7 +21,6 @@ export async function checkout(req, res, next) {
     const {
       observacoes,
       endereco,
-      forma_pagamento,
       whatsapp: clientWhatsapp,
     } = req.body;
 
@@ -29,7 +28,6 @@ export async function checkout(req, res, next) {
     const createOrderPromise = ordersService.createOrder(userId, {
       observacoes,
       endereco,
-      forma_pagamento,
       whatsapp: clientWhatsapp ?? null,
     });
 
@@ -50,7 +48,11 @@ export async function checkout(req, res, next) {
 
       const storeWhatsappRaw = process.env.STORE_WHATSAPP || DEFAULT_WHATSAPP;
       const phone = normalizePhone(storeWhatsappRaw || clientWhatsapp || null);
-      const whatsappMessage = 'Seu pedido está sendo processado. Em breve entraremos em contato pelo WhatsApp.';
+      const whatsappMessage = [
+        'Olá, equipe SaborFit! Realizei um pedido pelo site e ele ainda está sendo processado.',
+        'Poderiam, por favor, confirmar o recebimento e me orientar sobre a disponibilidade, o valor final e a forma de pagamento?',
+        'Agradeço desde já.',
+      ].join('\n\n');
       const whatsappUrl = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(whatsappMessage)}` : null;
 
       console.log('[checkout] timeout response', { orderId: null, whatsappUrl, phone });
@@ -84,6 +86,7 @@ export async function checkout(req, res, next) {
       success: true,
       data: {
         orderId: pedido.id,
+        orderCode: pedido.codigo,
         whatsappMessage,
         whatsappUrl,
       },

@@ -1,11 +1,12 @@
 import pool from '../../../database/pool.js';
+import { formatOrderCode } from '../utils/orderCode.js';
 
 const ordersRepository = {
-  async createOrder({ usuario_id, total, observacoes, whatsapp, endereco, forma_pagamento }) {
+  async createOrder({ usuario_id, total, observacoes, whatsapp, endereco }) {
     const [result] = await pool.execute(
       `INSERT INTO pedidos (usuario_id, total, status, observacoes, whatsapp, endereco, forma_pagamento)
-       VALUES (?, ?, 'NOVO', ?, ?, ?, ?)`,
-      [usuario_id, total, observacoes ?? null, whatsapp ?? null, endereco ?? null, forma_pagamento ?? null]
+       VALUES (?, ?, 'NOVO', ?, ?, ?, NULL)`,
+      [usuario_id, total, observacoes ?? null, whatsapp ?? null, endereco ?? null]
     );
 
     return this.findById(result.insertId);
@@ -61,7 +62,7 @@ const ordersRepository = {
       [id]
     );
 
-    return { ...pedido, itens };
+    return { ...pedido, codigo: formatOrderCode(pedido.id), itens };
   },
 
   async findByUserId(usuario_id) {
@@ -78,7 +79,10 @@ const ordersRepository = {
       [usuario_id]
     );
 
-    return rows;
+    return rows.map(pedido => ({
+      ...pedido,
+      codigo: formatOrderCode(pedido.id),
+    }));
   },
 
   async findAll({ page = 1, limit = 20, status } = {}) {
@@ -118,7 +122,15 @@ const ordersRepository = {
     const [rows] = await pool.query(query, params);
     const [[{ total }]] = await pool.query(countQuery, countParams);
 
-    return { orders: rows, total, page, limit };
+    return {
+      orders: rows.map(pedido => ({
+        ...pedido,
+        codigo: formatOrderCode(pedido.id),
+      })),
+      total,
+      page,
+      limit,
+    };
   },
 
   async updateStatus(id, status) {

@@ -25,13 +25,6 @@ export const validateCreateOrder = [
     .isLength({ max: 500 })
     .withMessage('Endereço inválido.'),
 
-  body('forma_pagamento')
-    .optional()
-    .isString()
-    .trim()
-    .isLength({ max: 50 })
-    .withMessage('Forma de pagamento inválida.'),
-
   body('observacoes')
     .optional()
     .isString()

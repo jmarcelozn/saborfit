@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import './css/ProductGallery.css';
 
-function ProductGallery({ images = [] }) {
+function ProductGallery({ images = [], productName = 'produto' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (!images || images.length === 0) {
@@ -30,7 +30,7 @@ function ProductGallery({ images = [] }) {
   const showThumbnails = images.length > 1;
 
   return (
-    <div className="product-gallery">
+    <div className={`product-gallery ${showThumbnails ? 'product-gallery--multiple' : ''}`}>
       <div className="product-gallery__main">
         <button
           type="button"
@@ -45,7 +45,7 @@ function ProductGallery({ images = [] }) {
         <div className="product-gallery__image-wrapper">
           <img
             src={images[currentIndex]}
-            alt={`Imagem ${currentIndex + 1} do produto`}
+            alt={`${productName} — imagem ${currentIndex + 1}`}
             className="product-gallery__image"
           />
         </div>
@@ -62,6 +62,12 @@ function ProductGallery({ images = [] }) {
       </div>
 
       {showThumbnails && (
+        <span className="product-gallery__counter" aria-live="polite">
+          {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+        </span>
+      )}
+
+      {showThumbnails && (
         <div className="product-gallery__thumbnails">
           {images.map((image, index) => (
             <button
@@ -75,7 +81,7 @@ function ProductGallery({ images = [] }) {
             >
               <img
                 src={image}
-                alt={`Miniatura ${index + 1}`}
+                alt=""
                 className="product-gallery__thumbnail-image"
               />
             </button>

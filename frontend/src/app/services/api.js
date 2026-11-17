@@ -1,4 +1,6 @@
 ﻿const BASE_API_URL = import.meta.env.VITE_API_URL || "/api";
+const MAX_NETWORK_RETRIES = 3;
+const NETWORK_RETRY_DELAY_MS = 500;
 
 export const API_URL = `${BASE_API_URL}/auth`;
 export const ADMIN_API_URL = BASE_API_URL;
@@ -14,6 +16,34 @@ export class ApiError extends Error {
     super(message);
     this.details = details;
     this.status = status;
+  }
+}
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function fetchWithRetry(url, options) {
+  const method = (options.method || 'GET').toUpperCase();
+  const canRetry = method === 'GET' || method === 'HEAD';
+
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      const response = await fetch(url, options);
+      const isTransientStatus = [502, 503, 504].includes(response.status);
+
+      if (!canRetry || !isTransientStatus || attempt >= MAX_NETWORK_RETRIES) {
+        return response;
+      }
+
+      await response.body?.cancel();
+    } catch (error) {
+      if (!canRetry || !(error instanceof TypeError) || attempt >= MAX_NETWORK_RETRIES) {
+        throw error;
+      }
+    }
+
+    await wait(NETWORK_RETRY_DELAY_MS * (attempt + 1));
   }
 }
 
@@ -44,7 +74,7 @@ function getDefaultMessageByStatus(status) {
 
 export async function apiFetch(path, options = {}) {
   try {
-    const response = await fetch(`${API_URL}${path}`, {
+    const response = await fetchWithRetry(`${API_URL}${path}`, {
       credentials: 'include',
       ...options,
       headers: {
@@ -87,7 +117,7 @@ export async function apiFetch(path, options = {}) {
       throw error;
     }
 
-    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+    if (error instanceof TypeError) {
       throw new ApiError(
         "Não foi possível conectar ao servidor. Verifique se o backend está rodando.",
         null,
@@ -105,7 +135,7 @@ export async function apiFetch(path, options = {}) {
 
 export async function adminApiFetch(path, options = {}) {
   try {
-    const response = await fetch(`${ADMIN_API_URL}${path}`, {
+    const response = await fetchWithRetry(`${ADMIN_API_URL}${path}`, {
       credentials: 'include',
       ...options,
       headers: {
@@ -148,7 +178,7 @@ export async function adminApiFetch(path, options = {}) {
       throw error;
     }
 
-    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+    if (error instanceof TypeError) {
       throw new ApiError(
         "Não foi possível conectar ao servidor. Verifique se o backend está rodando.",
         null,

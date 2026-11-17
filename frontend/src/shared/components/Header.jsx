@@ -29,6 +29,11 @@ function Header() {
             </Link>
           </div>
 
+          <nav className="header-nav" aria-label="Navegação principal">
+            <Link to={ROUTES.MENU}>Cardápio</Link>
+            <Link to="/#encomendas">Como encomendar</Link>
+          </nav>
+
           <div className="header-actions">
             <Link
               to={isAuthenticated ? '/profile' : '/login'}
@@ -37,8 +42,8 @@ function Header() {
               <User size={20} strokeWidth={1.5} />
               <span>
                 {isAuthenticated
-                  ? 'Meu Perfil'
-                  : 'Fazer Login'}
+                  ? 'Meu perfil'
+                  : 'Fazer login'}
               </span>
             </Link>
 

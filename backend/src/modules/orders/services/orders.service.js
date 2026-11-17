@@ -15,34 +15,41 @@ const VALID_STATUSES = [
 function formatWhatsAppMessage(pedido, itens, cliente_nome) {
   const linhasItens = itens
     .map(item => {
-      const subtotal = (item.preco_unitario * item.quantidade).toFixed(2);
-      return `• ${item.nome_produto} x${item.quantidade}\n  R$ ${subtotal}`;
+      const subtotal = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(item.preco_unitario * item.quantidade);
+      return `• ${item.nome_produto} (quantidade: ${item.quantidade}) — ${subtotal}`;
     })
-    .join('\n\n');
+    .join('\n');
+
+  const total = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(Number(pedido.total));
 
   return [
-    `Pedido #${pedido.id}`,
+    `Olá! Gostaria de confirmar meu pedido no SaborFit.`,
     '',
-    `Cliente: ${cliente_nome}`,
+    `*CÓDIGO DO PEDIDO: ${pedido.codigo}*`,
     '',
-    'Produtos:',
-    '',
+    `*Cliente:* ${cliente_nome}`,
+    '*Itens do pedido:*',
     linhasItens,
     '',
-    'Total:',
-    `R$ ${Number(pedido.total).toFixed(2)}`,
+    `*Total estimado:* ${total}`,
     '',
-    'Forma de pagamento:',
-    pedido.forma_pagamento ?? 'Não informada',
+    `*Endereço de entrega:* ${pedido.endereco ?? 'Não informado'}`,
+    '*Forma de pagamento:* será combinada diretamente com o atendimento.',
+    ...(pedido.observacoes ? ['', `*Observações:* ${pedido.observacoes}`] : []),
     '',
-    'Endereço:',
-    pedido.endereco ?? 'Não informado',
-    ...(pedido.observacoes ? ['', 'Observações:', pedido.observacoes] : []),
+    'Nossa equipe confirmará a disponibilidade e o valor final por aqui.',
+    'Agradecemos por escolher o SaborFit. Até breve!',
   ].join('\n');
 }
 
 const ordersService = {
-  async createOrder(usuario_id, { observacoes, whatsapp, endereco, forma_pagamento }) {
+  async createOrder(usuario_id, { observacoes, whatsapp, endereco }) {
     const startTs = Date.now();
     console.log(`[ordersService] createOrder start user=${usuario_id} at=${new Date(startTs).toISOString()}`);
 
@@ -87,7 +94,6 @@ const ordersService = {
       observacoes,
       whatsapp,
       endereco,
-      forma_pagamento,
     });
 
     await ordersRepository.createOrderItems(pedido.id, itensCarrinho);

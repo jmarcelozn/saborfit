@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import DefaultLayout from "@/app/layouts/DefaultLayout";
 
 import Home from "@/features/home/pages/Home";
+import Menu from "@/features/menu/pages/Menu";
 import Profile from "@/features/profile/pages/Profile";
 
 import Admin from "@/features/admin/pages/Admin";
@@ -39,6 +40,16 @@ export default function AppRoutes() {
           element={
             <DefaultLayout>
               <Home />
+            </DefaultLayout>
+          }
+        />
+
+        {/* Cardápio */}
+        <Route
+          path={ROUTES.MENU}
+          element={
+            <DefaultLayout>
+              <Menu />
             </DefaultLayout>
           }
         />

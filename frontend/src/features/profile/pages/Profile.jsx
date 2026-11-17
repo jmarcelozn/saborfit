@@ -1,161 +1,155 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ArrowLeft, ArrowUpRight, BadgeCheck, LockKeyhole, LogOut, Mail, ShieldCheck, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ROUTES } from "@/app/config/routes";
 import { useAuth } from "@/app/contexts/useAuth";
+import { showNotification } from "@/app/services/notificationService";
 import "./css/Profile.css";
 
-function formatDuration(seconds) {
-  if (seconds === null || seconds === undefined) return "Não disponível";
-  if (seconds <= 0) return "Expirado";
-
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-
-  const parts = [];
-  if (hours) parts.push(`${hours}h`);
-  if (minutes) parts.push(`${minutes}m`);
-  if (secs || parts.length === 0) parts.push(`${secs}s`);
-  return parts.join(" ");
-}
-
-function formatDate(value) {
-  if (!value) return "Não disponível";
-  try {
-    return new Date(value).toLocaleString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return value;
-  }
-}
-
 function getInitials(name) {
-  if (!name) return "?";
-  const parts = name.trim().split(" ").filter(Boolean);
-  if (parts.length === 1) return parts[0][0]?.toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  const parts = name?.trim().split(/\s+/).filter(Boolean) ?? [];
+  if (!parts.length) return "?";
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logoutAll } = useAuth();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingOutAll, setIsLoggingOutAll] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate(ROUTES.LOGIN, { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
-  const tokenInfo = useMemo(() => {
-    if (!user?.session) return null;
-
-    return {
-      expiresAt: user.session.expiresAt,
-      expiresIn: formatDuration(user.session.expiresInSeconds),
-    };
-  }, [user]);
-
-  const handleLogout = async () => {
+  const handleLogoutAll = async () => {
     try {
-      setIsLoggingOut(true);
+      setIsLoggingOutAll(true);
       await logoutAll();
-      navigate("/login");
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Erro ao sair");
+      showNotification("Você saiu da conta em todos os dispositivos.", "success");
+      navigate(ROUTES.LOGIN, { replace: true });
+    } catch (error) {
+      showNotification(error.message || "Não foi possível encerrar todas as sessões.", "error");
     } finally {
-      setIsLoggingOut(false);
+      setIsLoggingOutAll(false);
     }
   };
 
-  if (!isAuthenticated || !user) {
-    return null;
-  }
+  if (!isAuthenticated || !user) return null;
+
+  const isAdmin = user.role === "admin";
+  const isEmailVerified = Boolean(user.emailVerificado);
 
   return (
-    <main className="profile-container">
-      <section className="profile-hero">
-        <div className="profile-avatar">{getInitials(user.nome)}</div>
+    <main className="profile-page" id="main-content">
+      <div className="profile-page__inner">
+        <Link className="profile-back-link" to={ROUTES.HOME}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Voltar à loja
+        </Link>
 
-        <div className="profile-hero-info">
-          <span className="profile-eyebrow">Meu Perfil</span>
-          <h1 className="profile-name">{user.nome}</h1>
-          {user.email && <p className="profile-email">{user.email}</p>}
+        <header className="profile-page__heading">
+          <span className="profile-page__eyebrow">Área do cliente</span>
+          <h1>Meu perfil</h1>
+          <p>Consulte os dados vinculados à sua conta SaborFit.</p>
+        </header>
 
-        </div>
+        <section className="profile-identity" aria-label="Resumo da conta">
+          <div className="profile-identity__avatar" aria-hidden="true">
+            {getInitials(user.nome)}
+          </div>
+          <div className="profile-identity__content">
+            <span className="profile-identity__label">
+              {isAdmin ? "Conta administrativa" : "Conta SaborFit"}
+            </span>
+            <h2>{user.nome || "Cliente"}</h2>
+            <p>{user.email || "E-mail não informado"}</p>
+            <span className={`profile-identity__badge${isEmailVerified ? "" : " profile-identity__badge--pending"}`}>
+              {isEmailVerified
+                ? <BadgeCheck size={15} aria-hidden="true" />
+                : <ShieldCheck size={15} aria-hidden="true" />}
+              {isEmailVerified ? "E-mail verificado" : "E-mail não verificado"}
+            </span>
+          </div>
+          <Link
+            className="profile-button profile-button--secondary profile-identity__logout"
+            to={ROUTES.MENU}
+          >
+            Ver cardápio
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        </section>
 
-        <button
-          type="button"
-          className="profile-logout-btn"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-        >
-          {isLoggingOut ? "Saindo..." : "Sair da conta"}
-        </button>
-      </section>
+        <section className="profile-details" aria-labelledby="profile-details-title">
+          <div className="profile-section-heading">
+            <span className="profile-section-heading__icon">
+              <UserRound size={19} aria-hidden="true" />
+            </span>
+            <div>
+              <h2 id="profile-details-title">Dados da conta</h2>
+              <p>Informações cadastradas no seu perfil.</p>
+            </div>
+          </div>
 
-      <section className="profile-cards">
-        <div className="profile-card">
-          <h2 className="profile-card-title">Dados da conta</h2>
-
-          <dl className="profile-detail-list">
-            <div className="profile-detail-row">
-              <dt>Nome</dt>
+          <dl className="profile-details__list">
+            <div className="profile-detail">
+              <dt>
+                <UserRound size={17} aria-hidden="true" />
+                Nome completo
+              </dt>
               <dd>{user.nome || "Não informado"}</dd>
             </div>
-            <div className="profile-detail-row">
-              <dt>E-mail</dt>
-              <dd>{user.email || "Não informado"}</dd>
-            </div>
-
-            {user.telefone && (
-              <div className="profile-detail-row">
-                <dt>Telefone</dt>
-                <dd>{user.telefone}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-
-        <div className="profile-card">
-          <h2 className="profile-card-title">Sessão atual</h2>
-
-          <dl className="profile-detail-list">
-            <div className="profile-detail-row">
-              <dt>Expira em</dt>
-              <dd>
-                <span className="profile-session-pill">
-                  {tokenInfo?.expiresIn ?? "Não disponível"}
-                </span>
+            <div className="profile-detail">
+              <dt>
+                <Mail size={17} aria-hidden="true" />
+                E-mail
+              </dt>
+              <dd className="profile-detail__email">
+                <span>{user.email || "Não informado"}</span>
+                {isEmailVerified && (
+                  <span className="profile-detail__verified">
+                    <BadgeCheck size={14} aria-hidden="true" />
+                    Verificado
+                  </span>
+                )}
               </dd>
             </div>
-            <div className="profile-detail-row">
-              <dt>Data de expiração</dt>
-              <dd>{formatDate(tokenInfo?.expiresAt)}</dd>
+            <div className="profile-detail">
+              <dt>
+                <ShieldCheck size={17} aria-hidden="true" />
+                Tipo de conta
+              </dt>
+              <dd>{isAdmin ? "Administrador" : "Cliente"}</dd>
             </div>
           </dl>
-        </div>
-      </section>
+          <p className="profile-details__note">
+            Para atualizar seus dados, entre em contato com nosso atendimento.
+          </p>
+        </section>
 
-      <section className="profile-danger-zone">
-        <div>
-          <h3>Encerrar todas as sessões</h3>
-          <p>Isso vai desconectar sua conta em todos os dispositivos conectados.</p>
-        </div>
-        <button
-          type="button"
-          className="profile-logout-outline-btn"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-        >
-          {isLoggingOut ? "Saindo..." : "Sair de todos os dispositivos"}
-        </button>
-      </section>
+        <section className="profile-security" aria-labelledby="profile-security-title">
+          <span className="profile-security__icon">
+            <LockKeyhole size={20} aria-hidden="true" />
+          </span>
+          <div className="profile-security__content">
+            <h2 id="profile-security-title">Segurança da conta</h2>
+            <p>
+              Revogue o acesso da sua conta em todos os dispositivos conectados.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="profile-button profile-button--danger"
+            onClick={handleLogoutAll}
+            disabled={isLoggingOutAll}
+          >
+            <LogOut size={16} aria-hidden="true" />
+            {isLoggingOutAll ? "Encerrando sessões..." : "Sair de todos os dispositivos"}
+          </button>
+        </section>
+      </div>
     </main>
   );
 }

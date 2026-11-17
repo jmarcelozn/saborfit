@@ -1,31 +1,23 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/app/config/routes";
-import "@/styles/pages/error.css";
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowLeft, CakeSlice } from 'lucide-react';
+import { ROUTES } from '@/app/config/routes';
+import '@/styles/pages/error.css';
 
 export default function ErrorPage() {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const state = location.state || {};
-  const status = state.status || 404;
-  const message = state.message || (status === 404 ? "A página que você procura não foi encontrada." : "Ocorreu um erro no servidor.");
-  const details = state.details || null;
+  const status = location.state?.status || 404;
+  const isNotFound = status === 404;
+  const message = location.state?.message || (isNotFound ? 'A página que você procura não foi encontrada.' : 'Ocorreu um erro ao carregar esta página.');
 
   return (
-    <>
-      <div className="error-page">
-        <div className="error-card">
-          <div className="error-status">{status}</div>
-          <h1 className="error-title">{status === 404 ? "Página não encontrada" : "Erro"}</h1>
-          <p className="error-message">{message}</p>
-          {details && <pre className="error-details">{JSON.stringify(details, null, 2)}</pre>}
-
-          <div className="error-actions">
-
-          </div>
-        </div>
+    <main className="error-page" id="main-content">
+      <div className="error-card">
+        <span className="error-icon"><CakeSlice size={25} /></span>
+        <span className="error-status">Erro {status}</span>
+        <h1 className="error-title">{isNotFound ? 'Esta fatia não existe.' : 'Algo não saiu como esperado.'}</h1>
+        <p className="error-message">{message}</p>
+        <Link className="error-action" to={ROUTES.HOME}><ArrowLeft size={17} /> Voltar para a página inicial</Link>
       </div>
-    </>
+    </main>
   );
 }
